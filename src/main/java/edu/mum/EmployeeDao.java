@@ -19,7 +19,12 @@ public class EmployeeDao {
 
 	public List<Employee> findAll() {
 		ViewQuery view = new ViewQuery().allDocs().includeDocs(true);
-		return db.queryView(view, Employee.class);
+		try {			
+			return db.queryView(view, Employee.class);
+		}catch(DocumentNotFoundException ex) {
+			
+		}
+		return null;
 	}
 
 	public Employee save(Employee emp) {

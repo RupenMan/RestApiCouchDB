@@ -21,8 +21,10 @@ public class EmployeeService {
 	@GET
 	@Path("/findAll")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Employee> findAll() {
-		return employeeDao.findAll();
+	public Response findAll() {
+		List<Employee> empList = employeeDao.findAll();
+		return empList != null ? Response.ok(empList, MediaType.APPLICATION_JSON).build()
+				: Response.status(Response.Status.NO_CONTENT).build();
 	}
 
 	@POST
@@ -31,15 +33,16 @@ public class EmployeeService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response save(Employee emp) {
 		if (emp.getName() == null || emp.getName().equals("")) {
-			return Response.status(Response.Status.NO_CONTENT).entity("Name Not Found").build();
+			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("NAME NOT FOUND ERROR")
+					.type(MediaType.TEXT_HTML).build();
 		} else if (emp.getDept() == null || emp.getDept().equals("")) {
-			return Response.status(Response.Status.NO_CONTENT).entity("Department Not Allocated").build();
+			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("DEPARTMENT NOT AVAILABLE ERROR")
+					.type(MediaType.TEXT_HTML).build();
 		} else if (emp.getSalary() <= 0) {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Invalid Salary").build();
 		}
 		employeeDao.save(emp);
-		return Response.status(Response.Status.OK).build();
-
+		return Response.ok(emp, MediaType.APPLICATION_JSON).build();
 	}
 
 	@PUT
